@@ -1,0 +1,41 @@
+{
+  "name": "@ycu-engine/amplify-api-hook",
+  "version": "0.0.1",
+  "description": "",
+  "main": "common/index.js",
+  "module": "module/index.js",
+  "typings": "module/index.d.ts",
+  "files": [
+    "common",
+    "module"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "postinstall": "typesync || :",
+    "build": "tsc -p ./tsconfig.json && tsc -p ./tsconfig.module.json",
+    "prepublishOnly": "yarn build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycu-engine/amplify-api-hook.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "YutaUra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ycu-engine/amplify-api-hook/issues"
+  },
+  "homepage": "https://github.com/ycu-engine/amplify-api-hook#readme",
+  "devDependencies": {
+    "aws-amplify": "^3.3.12",
+    "recoil": "^0.1.2",
+    "typescript": "^4.1.3",
+    "typesync": "^0.8.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1"
+  }
+}
