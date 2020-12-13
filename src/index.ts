@@ -13,14 +13,18 @@ export const AmplifyApiErrorAtom = atom<any>({
   default: null
 })
 
-export interface GraphQLVariables {
+export interface GraphQLQueryVariables {
   limit?: number
 }
 
-export const useAmplifyGraphql = <V, T>(
+export interface GraphQLMutationVariables<T = any> {
+  input: T
+}
+
+export const useAmplifyGraphqlQuery = <T, V>(
   atom: RecoilState<T>,
   graphql: string,
-  variables: GraphQLVariables,
+  variables: GraphQLQueryVariables,
   handler: (result: GraphQLResult<V>) => T | Promise<T>
 ) => {
   const [data, setData] = useRecoilState(atom)
@@ -34,6 +38,11 @@ export const useAmplifyGraphql = <V, T>(
       const result = (await API.graphql(
         graphqlOperation(graphql, variables)
       )) as GraphQLResult<V>
+      if (result.errors) {
+        setError(result.errors)
+        setIsLoading(false)
+        return
+      }
       const value = await handler(result)
       setData(value)
     } catch (err) {
@@ -48,5 +57,43 @@ export const useAmplifyGraphql = <V, T>(
     isLoading,
     error,
     fetch
+  }
+}
+
+type useAmplifyGraphqlMutationProps = {
+  mutation: string
+}
+
+export const useAmplifyGraphqlMutation = <T, V>({
+  mutation
+}: useAmplifyGraphqlMutationProps) => {
+  const [isLoading, setIsLoading] = useRecoilState(AmplifyApiIsLoadingAtom)
+  const [error, setError] = useRecoilState(AmplifyApiErrorAtom)
+
+  const mutate = async (variable: GraphQLMutationVariables<T>) => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const result = (await API.graphql(
+        graphqlOperation(mutation, variable)
+      )) as GraphQLResult<V>
+      if (result.errors) {
+        setError(result.errors)
+      } else {
+        setIsLoading(false)
+        return result.data
+      }
+    } catch (err) {
+      setError(err)
+    } finally {
+      setIsLoading(false)
+    }
+    return undefined
+  }
+
+  return {
+    isLoading,
+    error,
+    mutate
   }
 }
