@@ -17,7 +17,7 @@ export interface GraphQLVariables {
   limit?: number
 }
 
-export const useAmplifyGraphql = <T, V>(
+export const useAmplifyGraphql = <V, T>(
   atom: RecoilState<T>,
   graphql: string,
   variables: GraphQLVariables,
