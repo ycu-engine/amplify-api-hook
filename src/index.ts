@@ -1,4 +1,4 @@
-import type { GraphQLResult } from '@aws-amplify/api-graphql'
+import type { GraphQLOptions, GraphQLResult } from '@aws-amplify/api-graphql'
 import { API, graphqlOperation } from 'aws-amplify'
 import type { RecoilState } from 'recoil'
 import { atom, useRecoilState } from 'recoil'
@@ -21,12 +21,17 @@ export interface GraphQLMutationVariables<T = any> {
   input: T
 }
 
-export const useAmplifyGraphqlQuery = <T, V>(
-  atom: RecoilState<T>,
-  graphql: string,
-  variables: GraphQLQueryVariables,
+type useAmplifyGraphqlQueryPayload<T, V> = {
+  atom: RecoilState<T>
+  option: GraphQLOptions
   handler: (result: GraphQLResult<V>) => T | Promise<T>
-) => {
+}
+
+export const useAmplifyGraphqlQuery = <T, V>({
+  atom,
+  option,
+  handler
+}: useAmplifyGraphqlQueryPayload<T, V>) => {
   const [data, setData] = useRecoilState(atom)
   const [isLoading, setIsLoading] = useRecoilState(AmplifyApiIsLoadingAtom)
   const [error, setError] = useRecoilState(AmplifyApiErrorAtom)
@@ -35,9 +40,7 @@ export const useAmplifyGraphqlQuery = <T, V>(
     setIsLoading(true)
     setError(null)
     try {
-      const result = (await API.graphql(
-        graphqlOperation(graphql, variables)
-      )) as GraphQLResult<V>
+      const result = (await API.graphql(option)) as GraphQLResult<V>
       if (result.errors) {
         setError(result.errors)
         setIsLoading(false)
