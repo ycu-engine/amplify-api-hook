@@ -1,4 +1,5 @@
 import type { GraphQLOptions, GraphQLResult } from '@aws-amplify/api-graphql'
+import { GRAPHQL_AUTH_MODE } from '@aws-amplify/api-graphql'
 import { API, graphqlOperation } from 'aws-amplify'
 import type { RecoilState } from 'recoil'
 import { atom, useRecoilState } from 'recoil'
@@ -21,6 +22,7 @@ export interface GraphQLMutationVariables<T = any> {
   input: T
 }
 
+export { GRAPHQL_AUTH_MODE }
 type useAmplifyGraphqlQueryPayload<T, V> = {
   atom: RecoilState<T>
   option: GraphQLOptions
