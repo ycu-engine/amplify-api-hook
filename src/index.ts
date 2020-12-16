@@ -26,7 +26,7 @@ export { GRAPHQL_AUTH_MODE }
 type useAmplifyGraphqlQueryPayload<T, V> = {
   atom: RecoilState<T>
   option: GraphQLOptions
-  handler: (result: GraphQLResult<V>) => T | Promise<T>
+  handler: (result: V) => T | Promise<T>
 }
 
 export const useAmplifyGraphqlQuery = <T, V>({
@@ -48,7 +48,12 @@ export const useAmplifyGraphqlQuery = <T, V>({
         setIsLoading(false)
         return
       }
-      const value = await handler(result)
+      if (!result.data) {
+        setError(['result is empty'])
+        setIsLoading(false)
+        return
+      }
+      const value = await handler(result.data)
       setData(value)
     } catch (err) {
       setError(err)
