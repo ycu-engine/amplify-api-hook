@@ -55,11 +55,13 @@ export const useAmplifyGraphqlQuery = <T, V>({
       }
       const value = await handler(result.data)
       setData(value)
+      return value
     } catch (err) {
       setError(err)
     } finally {
       setIsLoading(false)
     }
+    return undefined
   }
 
   return {
