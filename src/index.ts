@@ -26,7 +26,7 @@ export { GRAPHQL_AUTH_MODE }
 type useAmplifyGraphqlQueryPayload<T, V> = {
   atom: RecoilState<T>
   option: GraphQLOptions
-  handler: (result: V) => T | Promise<T>
+  handler: (result: Exclude<V, null>) => T | Promise<T>
 }
 
 export const useAmplifyGraphqlQuery = <T, V>({
